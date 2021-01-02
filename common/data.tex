@@ -1,7 +1,10 @@
 %%% Основные сведения %%%
 \newcommand{\thesisAuthorLastName}{Крылова}
 \newcommand{\thesisAuthorOtherNames}{Анастасия Андреевна}
+\newcommand{\thesisAuthorLastNameEn}{Krylova}
+\newcommand{\thesisAuthorOtherNamesEn}{Anastasiya Andreevna}
 \newcommand{\thesisAuthorInitials}{А.\,А.}
+\newcommand{\thesisAuthorEn}{\thesisAuthorLastNameEn~\thesisAuthorOtherNamesEn}
 \newcommand{\thesisAuthor}             % Диссертация, ФИО автора
 {%
     \texorpdfstring{% \texorpdfstring takes two arguments and uses the first for (La)TeX and the second for pdf
@@ -16,10 +19,14 @@
 %{\fixme{xxx.xxx}}
 \newcommand{\thesisTitle}              % Диссертация, название
 {Исследование и~разработка модульного технологического оборудования для единичного и~мелкосерийного производства}
+\newcommand{\thesisTitleEn}
+{Research and Development of Modular Technological Equipment for Single and Small-scale production}
 \newcommand{\thesisSpecialtyNumber}    % Диссертация, специальность, номер
 {05.11.14}
 \newcommand{\thesisSpecialtyTitle}     % Диссертация, специальность, название (название взято с сайта ВАК для примера)
 {Технология приборостроения}
+\newcommand{\thesisSpecialtyTitleEn}
+{Instrumentation technology}
 %% \newcommand{\thesisSpecialtyTwoNumber} % Диссертация, вторая специальность, номер
 %% {\fixme{XX.XX.XX}}
 %% \newcommand{\thesisSpecialtyTwoTitle}  % Диссертация, вторая специальность, название
@@ -27,14 +34,20 @@
 %% оздоровительной и~адаптивной физической культуры}}
 \newcommand{\thesisDegree}             % Диссертация, ученая степень
 {кандидата технических наук}
+\newcommand{\thesisDegreeEn}
+{сandidate of engineering}
 \newcommand{\thesisDegreeShort}        % Диссертация, ученая степень, краткая запись
 {канд. техн. наук}
 \newcommand{\thesisCity}               % Диссертация, город написания диссертации
 {Санкт-Петербург}
+\newcommand{\thesisCityEn}
+{Saint-Petersburg}
 \newcommand{\thesisYear}               % Диссертация, год написания диссертации
 {\the\year}
 \newcommand{\thesisOrganization}       % Диссертация, организация
-{федеральное государственное автономное образовательное учреждение высшего образования <<Национальный исследовательский университет ИТМО>>}
+{Национальный исследовательский университет ИТМО\\(Университет ИТМО)}
+\newcommand{\thesisOrganizationEn}
+{ITMO University}
 \newcommand{\thesisOrganizationShort}  % Диссертация, краткое название организации для доклада
 {Университет ИТМО}
 
@@ -44,8 +57,12 @@
 %% \newcommand{\supervisorDead}{}           % Рисовать рамку вокруг фамилии
 \newcommand{\supervisorFio}              % Научный руководитель, ФИО
 {Афанасьев Максим Яковлевич}
+\newcommand{\supervisorFioEn}              % Научный руководитель, ФИО
+{Afanasev Maksim Ya.}
 \newcommand{\supervisorRegalia}          % Научный руководитель, регалии
 {кандидат технических наук}
+\newcommand{\supervisorRegaliaEn}
+{candidate of engineering sciences}
 \newcommand{\supervisorFioShort}         % Научный руководитель, ФИО
 {М.\,Я.~Афанасьв}
 \newcommand{\supervisorRegaliaShort}     % Научный руководитель, регалии
@@ -63,21 +80,43 @@
 
 \newcommand{\opponentOneFio}           % Оппонент 1, ФИО
 {\fixme{Фамилия Имя Отчество}}
+\newcommand{\opponentOneFioEn}
+{\fixme{Surname Name Patronimic}}
+%
 \newcommand{\opponentOneRegalia}       % Оппонент 1, регалии
 {\fixme{доктор физико-математических наук, профессор}}
+\newcommand{\opponentOneRegaliaEn}      
+{\fixme{Doctor of Technical Sciences, Professor}}
+%
 \newcommand{\opponentOneJobPlace}      % Оппонент 1, место работы
 {\fixme{Не очень длинное название для места работы}}
+\newcommand{\opponentOneJobPlaceEn}      
+{\fixme{Place of work}}
+%
 \newcommand{\opponentOneJobPost}       % Оппонент 1, должность
 {\fixme{старший научный сотрудник}}
-
+\newcommand{\opponentOneJobPostEn}
+{\fixme{position}}
+%
 \newcommand{\opponentTwoFio}           % Оппонент 2, ФИО
 {\fixme{Фамилия Имя Отчество}}
+\newcommand{\opponentTwoFioEn}
+{\fixme{Surname Name Patronimic}}
+%
 \newcommand{\opponentTwoRegalia}       % Оппонент 2, регалии
 {\fixme{кандидат технических наук}}
+\newcommand{\opponentTwoRegaliaEn}
+{\fixme{Doctor of Technical Sciences, Professor}}
+%
 \newcommand{\opponentTwoJobPlace}      % Оппонент 2, место работы
 {\fixme{Основное место работы c длинным длинным длинным длинным названием}}
+\newcommand{\opponentTwoJobPlaceEn}
+{\fixme{Place of work}}
+%
 \newcommand{\opponentTwoJobPost}       % Оппонент 2, должность
 {\fixme{старший научный сотрудник}}
+\newcommand{\opponentTwoJobPostEn}
+{\fixme{position}}
 
 %% \newcommand{\opponentThreeFio}         % Оппонент 3, ФИО
 %% {\fixme{Фамилия Имя Отчество}}
@@ -93,23 +132,31 @@
 профессионального образования с~длинным длинным длинным длинным названием}}
 
 \newcommand{\defenseDate}              % Защита, дата
-{\fixme{DD mmmmmmmm YYYY~г.~в~XX часов}}
+{\fixme{DD.MM.YYYY~г.~в~XX:00 часов}}
+\newcommand{\defenseDateEn}
+{\fixme{DD.MM.YYYY at XX:00}}
 \newcommand{\defenseCouncilNumber}     % Защита, номер диссертационного совета
-{\fixme{Д\,123.456.78}}
+{05.11.14}
 \newcommand{\defenseCouncilTitle}      % Защита, учреждение диссертационного совета
-{\fixme{Название учреждения}}
+{Университета ИТМО}
 \newcommand{\defenseCouncilAddress}    % Защита, адрес учреждение диссертационного совета
-{\fixme{Адрес}}
+{Санкт-Петербург, Кронверкский пр.\,49, лит.\,А, ауд.~\fixme{XXX}}
 \newcommand{\defenseCouncilPhone}      % Телефон для справок
 {\fixme{+7~(0000)~00-00-00}}
 
 \newcommand{\defenseSecretaryFio}      % Секретарь диссертационного совета, ФИО
 {\fixme{Фамилия Имя Отчество}}
+\newcommand{\defenseSecretaryFioEn}
+{\fixme{Surname Name Patronimic}}
 \newcommand{\defenseSecretaryRegalia}  % Секретарь диссертационного совета, регалии
-{\fixme{д-р~физ.-мат. наук}}            % Для сокращений есть ГОСТы, например: ГОСТ Р 7.0.12-2011 + http://base.garant.ru/179724/#block_30000
+{\fixme{кандидат технических наук, доцент}}  % Для сокращений есть ГОСТы, например: ГОСТ Р 7.0.12-2011 + http://base.garant.ru/179724/#block_30000
+\newcommand{\defenseSecretaryRegaliaEn}
+{\fixme{Doctor of Technical Sciences, Professor}}
 
 \newcommand{\synopsisLibrary}          % Автореферат, название библиотеки
-{\fixme{Название библиотеки}}
+{Универcитета ИТМО  по адресу: 197101, Санкт-Петербург, Кронверкский~пр., д.\,49, лит.\,А и на сайте \mbox{\url{https://dissovet.itmo.ru}}}
+\newcommand{\synopsisLibraryEn}
+{49 Kronversky pr., \mbox{Saint-Petersburg}, Russia and on \url{https://dissovet.itmo.ru} website}
 \newcommand{\synopsisDate}             % Автореферат, дата рассылки
 {\fixme{DD mmmmmmmm}\the\year~года}
 
