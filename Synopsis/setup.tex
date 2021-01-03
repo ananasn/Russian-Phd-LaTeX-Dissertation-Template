@@ -21,7 +21,7 @@
 \makeatletter
 \@ifundefined{c@bibgrouped}{
   \newcounter{bibgrouped}
-  \setcounter{bibgrouped}{0}  % 0 --- единый список работ автора;
+  \setcounter{bibgrouped}{1}  % 0 --- единый список работ автора;
                               % 1 --- сгруппированные работы автора
 }{}
 \makeatother
@@ -35,19 +35,19 @@
 %% Подпись таблиц %%
 
 % смещение строк подписи после первой
-\newcommand{\tabindent}{0cm}
+%\newcommand{\tabindent}{0cm}
 
 % тип форматирования таблицы
 % plain --- название и текст в одной строке
 % split --- название и текст в разных строках
-\newcommand{\tabformat}{plain}
+%\newcommand{\tabformat}{plain}
 
 %%% настройки форматирования таблицы `plain'
 
 % выравнивание по центру подписи, состоящей из одной строки
 % true  --- выравнивать
 % false --- не выравнивать
-\newcommand{\tabsinglecenter}{false}
+%\newcommand{\tabsinglecenter}{false}
 
 % выравнивание подписи таблиц
 % justified   --- выравнивать как обычный текст
@@ -56,10 +56,10 @@
 % centerfirst --- выравнивать по центру только первую строку
 % raggedleft  --- выравнивать по правому краю
 % raggedright --- выравнивать по левому краю
-\newcommand{\tabjust}{justified}
+%\newcommand{\tabjust}{justified}
 
 % Разделитель записи «Таблица #» и названия таблицы
-\newcommand{\tablabelsep}{~\cyrdash\ }
+%\newcommand{\tablabelsep}{~\cyrdash\ }
 
 %%% настройки форматирования таблицы `split'
 
@@ -67,17 +67,17 @@
 % \centering   --- выравнивать по центру
 % \raggedleft  --- выравнивать по правому краю
 % \raggedright --- выравнивать по левому краю
-\newcommand{\splitformatlabel}{\raggedleft}
+%\newcommand{\splitformatlabel}{\raggedleft}
 
 % положение текста подписи
 % \centering   --- выравнивать по центру
 % \raggedleft  --- выравнивать по правому краю
 % \raggedright --- выравнивать по левому краю
-\newcommand{\splitformattext}{\raggedright}
+%\newcommand{\splitformattext}{\raggedright}
 
 %% Подпись рисунков %%
 %Разделитель записи «Рисунок #» и названия рисунка
-\newcommand{\figlabelsep}{~\cyrdash\ }  % (ГОСТ 2.105, 4.3.1)
+%\newcommand{\fisglabelsep}{~\cyrdash\ }  % (ГОСТ 2.105, 4.3.1)
                                         % "--- здесь не работает
 
 %Демонстрация подписи диссертанта на автореферате

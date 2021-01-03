@@ -1,3 +1,8 @@
+\clearpage
+
+\addcontentsline{toc}{chapter}{Реферат} 
+\includepdf[pages=-, pagecommand={}]{synopsis.pdf}
+
 \chapter*{Введение}                         % Заголовок
 \addcontentsline{toc}{chapter}{Введение}    % Добавляем его в оглавление
 
@@ -12,9 +17,8 @@
 \newcommand{\reliability}{\textbf{\reliabilityTXT}}
 \newcommand{\probation}{\textbf{\probationTXT}}
 \newcommand{\contribution}{\textbf{\contributionTXT}}
-\newcommand{\publications}{\textbf{\publicationsTXT}}
 \newcommand{\implementation}{\textbf{\implementationTXT}}
-
+\newcommand{\publications}{\textbf{\publicationsTXT}}
 
 \input{common/characteristic} % Характеристика работы по структуре во введении и в автореферате не отличается (ГОСТ Р 7.0.11, пункты 5.3.1 и 9.2.1), потому её загружаем из одного и того же внешнего файла, предварительно задав форму выделения некоторым параметрам
 
