@@ -60,7 +60,20 @@
 \include{Dissertation/contents}        % Оглавление
 \ifnumequal{\value{contnumfig}}{1}{}{\counterwithout{figure}{chapter}}
 \ifnumequal{\value{contnumtab}}{1}{}{\counterwithout{table}{chapter}}
-\include{Dissertation/introduction}    	   % Реферат
+
+% Реферат
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Реферат} 
+\includepdf[pages=-, pagecommand={}]{synopsis.pdf}
+
+% Реферат на английском
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Synopsis} 
+\includepdf[pages=-, pagecommand={}]{synopsis-en.pdf}
+
+\include{Dissertation/introduction}    	   
 \ifnumequal{\value{contnumfig}}{1}{\counterwithout{figure}{chapter}
 }{\counterwithin{figure}{chapter}}
 \ifnumequal{\value{contnumtab}}{1}{\counterwithout{table}{chapter}
@@ -68,6 +81,7 @@
 \include{Dissertation/part1}           % Глава 1
 \include{Dissertation/part2}           % Глава 2
 \include{Dissertation/part3}           % Глава 3
+\include{Dissertation/part4}           % Глава 4
 \include{Dissertation/conclusion}      % Заключение
 \include{Dissertation/acronyms}        % Список сокращений и условных обозначений
 \include{Dissertation/dictionary}      % Словарь терминов
