@@ -52,7 +52,7 @@
 \input{common/concl}
 
 \ifdefmacro{\microtypesetup}{\microtypesetup{protrusion=false}}{} % не рекомендуется применять пакет микротипографики к автоматически генерируемому списку литературы
-\urlstyle{rm}                               % ссылки URL обычным шрифтом
+\urlstyle{rm}                     % ссылки URL обычным шрифтом
 \ifnumequal{\value{bibliosel}}{0}{% Встроенная реализация с загрузкой файла через движок bibtex8
   \renewcommand{\bibname}{\large \bibtitleauthor}
   \nocite{*}
@@ -63,24 +63,6 @@
   %  * Порядок перечисления определяет порядок в библиографии (только внутри подраздела, если `\insertbiblioauthorgrouped`).
   %  * Если не соблюдать порядок "как для \printbibliography", нумерация в `\insertbiblioauthor` будет кривой.
   %  * Если цитировать каждый источник отдельной командой --- найти некоторые ошибки будет проще.
-  %
-  %% authorvak
-  \nocite{vakbib-microservice-2018}%
-  \nocite{vakbib-blockchain-2019}%
-  \nocite{vakbib-wpan-2020}%
-  \nocite{vakbib-machine-vision-2020}%
-  %
-  %% authorwos
-  %\nocite{wosbib1}%
-  %
-  %% authorscopus
-  %\nocite{scbib1}%
-  %
-  %% authorpathent
-  %\nocite{patbib1}%
-  %
-  %% authorprogram
-  %\nocite{progbib1}%
   %
   %% authorconf
   \nocite{confbib-2017-trajectory-problems}%
@@ -94,8 +76,27 @@
   \nocite{confbib-2018-blockchain}%
   \nocite{confbib-2019-interpolation}%
   \nocite{confbib-2019-voice-assistant}%
+  \nocite{vakbib-wpan-2020}%
   \nocite{confbib-2020-smart-controller}%
   \nocite{confbib-2020-auto-positioning}%
+  \nocite{confbib-2020-RSSI}
+  %
+  %% authorvak
+  \nocite{vakbib-microservice-2018}%
+  \nocite{vakbib-blockchain-2019}%
+  \nocite{vakbib-machine-vision-2020}%
+  %
+  %% authorwos
+  %\nocite{wosbib1}%
+  %
+  %% authorscopus
+  %\nocite{scbib1}%
+  %
+  %% authorpathent
+  %\nocite{patbib1}%
+  %
+  %% authorprogram
+  %\nocite{progbib1}%
   %
   %% authorother
   \nocite{bib1}%
