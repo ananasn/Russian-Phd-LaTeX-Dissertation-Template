@@ -1,0 +1,131 @@
+\chapter*{Synopsis}                      
+
+\section*{Overview of the work}
+
+\newcommand{\actualityEn}{{\textbf\actualityTXTEn}}
+\newcommand{\progressEn}{{\textbf\progressTXTEn}}
+\newcommand{\aimEn}{{\textbf\aimTXTEn}}
+\newcommand{\tasksEn}{\textbf{\tasksTXTEn}}
+\newcommand{\noveltyEn}{\textbf{\noveltyTXTEn}}
+\newcommand{\influenceEn}{\textbf{\influenceTXTEn}}
+\newcommand{\methodsEn}{\textbf{\methodsTXTEn}}
+\newcommand{\defpositionsEn}{\textbf{\defpositionsTXTEn}}
+\newcommand{\reliabilityEn}{\textbf{\reliabilityTXTEn}}
+\newcommand{\probationEn}{\textbf{\probationTXTEn}}
+\newcommand{\contributionEn}{\textbf{\contributionTXTEn}}
+\newcommand{\publicationsEn}{\textbf{\publicationsTXTEn}}
+\newcommand{\implementationEn}{\textbf{\implementationTXTEn}}
+
+
+\input{common/characteristic-en} % Характеристика работы по структуре во введении и в автореферате не отличается (ГОСТ Р 7.0.11, пункты 5.3.1 и 9.2.1), потому её загружаем из одного и того же внешнего файла, предварительно задав форму выделения некоторым параметрам
+
+%Диссертационная работа была выполнена при поддержке грантов \dots
+
+%\underline{\textbf{Объем и структура работы.}} Диссертация состоит из~введения,
+%четырех глав, заключения и~приложения. Полный объем диссертации
+%\textbf{ХХХ}~страниц текста с~\textbf{ХХ}~рисунками и~5~таблицами. Список
+%литературы содержит \textbf{ХХX}~наименование.
+
+\section*{Thesis contents}
+\textbf{In the introduction} the relevance of the research carried out within the framework of this dissertation work is substantiated, a review of the scientific literature on the problem under study is given, the goal is formulated, the tasks of the work are set, the scientific novelty and practical significance of the presented work are stated. In the~subsequent chapters, the general principle allowing~\dots is first described, and~then there is an approbation on particular examples:~\dots and~\dots.
+
+
+\textbf{Chapter 1} deals with \dots
+
+\textbf{Chapter 2} is devoted to the investigation of \dots
+
+\textbf{Chapter 3} is devoted to the investigation of \dots
+
+\textbf{Chapter 4} describes \dots
+
+\FloatBarrier                      
+\textbf{In conclusion}, the main results of the work are given, which are as follows:
+\input{common/concl-en}
+
+\ifdefmacro{\microtypesetup}{\microtypesetup{protrusion=false}}{} % не рекомендуется применять пакет микротипографики к автоматически генерируемому списку литературы
+\urlstyle{rm}                               % ссылки URL обычным шрифтом
+\ifnumequal{\value{bibliosel}}{0}{% Встроенная реализация с загрузкой файла через движок bibtex8
+  \renewcommand{\bibname}{\large \bibtitleauthor}
+  \nocite{*}
+  \insertbiblioauthor           % Подключаем Bib-базы
+  %\insertbiblioexternal   % !!! bibtex не умеет работать с несколькими библиографиями !!!
+}{% Реализация пакетом biblatex через движок biber
+  % Цитирования.
+  %  * Порядок перечисления определяет порядок в библиографии (только внутри подраздела, если `\insertbiblioauthorgrouped`).
+  %  * Если не соблюдать порядок "как для \printbibliography", нумерация в `\insertbiblioauthor` будет кривой.
+  %  * Если цитировать каждый источник отдельной командой --- найти некоторые ошибки будет проще.
+  %
+  %% authorconf
+  \nocite{confbib-2017-trajectory-problems}%
+  \nocite{confbib-2017-json}%
+  \nocite{confbib-2017-modular-integration}%
+  \nocite{confbib-2017-machine-vision}%
+  \nocite{confbib-2017-microservices}%
+  \nocite{confbib-2018-motion-profile}%
+  \nocite{confbib-2018-etherium}%
+  \nocite{confbib-2018-mesh}%
+  \nocite{confbib-2018-blockchain}%
+  \nocite{confbib-2019-interpolation}%
+  \nocite{confbib-2019-voice-assistant}%
+  \nocite{vakbib-wpan-2020}%
+  \nocite{confbib-2020-smart-controller}%
+  \nocite{confbib-2020-auto-positioning}%
+  \nocite{confbib-2020-RSSI}
+  %
+  %% authorvak
+  \nocite{vakbib-microservice-2018}%
+  \nocite{vakbib-blockchain-2019}%
+  \nocite{vakbib-machine-vision-2020}%
+  %
+  %% authorwos
+  %\nocite{wosbib1}%
+  %
+  %% authorscopus
+  %\nocite{scbib1}%
+  %
+  %% authorpathent
+  %\nocite{patbib1}%
+  %
+  %% authorprogram
+  %\nocite{progbib1}%
+  %
+  %% authorother
+  %\nocite{bib1}%
+  %\nocite{bib2}%
+
+  \ifnumgreater{\value{usefootcite}}{0}{
+    \begin{refcontext}[labelprefix={}]
+      \ifnum \value{bibgrouped}>0
+        \insertbiblioauthorgrouped    % Вывод всех работ автора, сгруппированных по источникам
+      \else
+        \insertbiblioauthor      % Вывод всех работ автора
+      \fi
+    \end{refcontext}
+  }{
+  \ifnum \totvalue{citeexternal}>0
+    \begin{refcontext}[labelprefix=A]
+      \ifnum \value{bibgrouped}>0
+        \insertbiblioauthorgrouped    % Вывод всех работ автора, сгруппированных по источникам
+      \else
+        \insertbiblioauthor      % Вывод всех работ автора
+      \fi
+    \end{refcontext}
+  \else
+    \ifnum \value{bibgrouped}>0
+      \insertbiblioauthorgrouped    % Вывод всех работ автора, сгруппированных по источникам
+    \else
+      \insertbiblioauthor      % Вывод всех работ автора
+    \fi
+  \fi
+  %  \insertbiblioauthorimportant  % Вывод наиболее значимых работ автора (определяется в файле characteristic во второй section)
+  \begin{refcontext}[labelprefix={}]
+      \insertbiblioexternal            % Вывод списка литературы, на которую ссылались в тексте автореферата
+  \end{refcontext}
+  % Невидимый библиографический список для подсчёта количества внешних публикаций
+  % Используется, чтобы убрать приставку "А" у работ автора, если в автореферате нет
+  % цитирований внешних источников.
+  \printbibliography[heading=nobibheading, section=0, env=countexternal, keyword=biblioexternal, resetnumbers=true]%
+  }
+}
+\ifdefmacro{\microtypesetup}{\microtypesetup{protrusion=true}}{}
+\urlstyle{tt}                               % возвращаем установки шрифта ссылок URL
