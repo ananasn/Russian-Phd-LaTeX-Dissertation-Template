@@ -85,7 +85,7 @@ A Minimal Thread Device does not subscribe to multicast traffic and forwards all
 
 Возвращаемое значение не обязательно должно быть одним. Описание каждого из них включает в себя тип, пределы и массив значений с временными метками. Диспетчер контролирует выход каждого значения за допустимые пределы, и в случае возникновения такой ситуации – осуществляет анализ возникшей ошибки, и принимается решение о возможности или невозможности продолжения работы оборудования.
 
-Рассмотрим теперь процедуру регистрации модуля в реестре диспетчера. С точки зрения протокола "--- здесь нет никаких проблем: просто передача бинарного JSON-сообщения через очередь сообщений с последующей записью в распределенное хранилище [ссылка]. Однако не стоит забывать, что все диспетчеры и все модули находятся в единой самоорганизующейся mesh-сети. Возникает вопрос "--- как модуль определит к какому конкретно диспетчеру он подключен физически.
+Рассмотрим теперь процедуру регистрации модуля в реестре диспетчера. С точки зрения протокола "--- здесь нет никаких проблем: просто передача бинарного JSON-сообщения через очередь сообщений с последующей записью в распределенное хранилище. Однако не стоит забывать, что все диспетчеры и все модули находятся в единой самоорганизующейся mesh-сети. Возникает вопрос "--- как модуль определит к какому конкретно диспетчеру он подключен физически.
 
 Предлагается следующее решение. Физическое подключение каждого модуля реализуется по трехпроводному интерфейсу, где по двум проводникам передается питающее напряжении, а третий используется в качестве линии безопасности (safety line). Линия безопасности объединяет все модули одной единицы оборудования по схеме монтажное И. В данной схеме линия безопасности подтянута резистором к плюсу питания. Так как сопротивление между линией и землей бесконечность, а между питанием и линией равно номиналу резистора, то напряжение на линии равно напряжению питания. То есть высокий уровень или логическая единица. Как уже было сказано выше, все модули подключены к линии и могут замыкать её на землю. Соответственно, на линии будет высокий уровень тогда и только тогда, когда все модули выставят высокий уровень на своих выходах. Как только любой из модулей соединит линию с землей, на ней установится низкий логический уровень и не один модуль не сможет на это повлиять.
 
@@ -167,10 +167,11 @@ A Minimal Thread Device does not subscribe to multicast traffic and forwards all
 	\item \textit{Server} - это высокопроизводительный компьютер, используемый для наиболее ресурсоемких задач распределенной системы ЧПУ. Технические характеристики: 2 x Intel Xeon E5620 CPU @ \SI{2,4}{\giga\hertz}, \SI{32}{\gibi\byte} ОЗУ.
 	%, Гигабитная сеть Intel 82575EB.
 	
-	\item \textit{MCU} "--- это встроенная система на кристалле, используемая для реализации низкоуровневых алгоритмов в режиме реального времени. Технические характеристики: Amlogic S905 Quad Core Cortex-A53 @ \SI{1,5}{\giga\hertz}, 64-битный процессор ARMv8 ГГц с графическим процессором Mali-450, \SI{2}{\gibi\byte} ОЗУ.
+	\item \textit{Microcomputer} "--- это встроенная система на кристалле, используемая для реализации низкоуровневых алгоритмов в режиме реального времени. Технические характеристики: Amlogic S905 Quad Core Cortex-A53 @ \SI{1,5}{\giga\hertz}, 64-битный процессор ARMv8 ГГц с графическим процессором Mali-450, \SI{2}{\gibi\byte} ОЗУ.
 	%, Гигабитная сеть Realtek RTL8211F.
 	Операционная система: Ubuntu 16.04 LTS.
-	\item \textit{Виртуальный частный сервер (VPS)} "--- это облачная виртуальная машина, используемая для оптимизации вычислительной мощности распределенной системы ЧПУ путем передачи части программных компонентов на выделенные серверы. Технические характеристики: Intel Xeon CPU E5645 @ \SI{2,4}{\giga\hertz}, \SI{512}{\mebi\byte} ОЗУ. Операционная система: Ubuntu 16.04.2 LTS, GNU/Linux 2.6.32-042stab120.18 x86-64.
+	
+	\item \textit{Virtual server} "--- это облачная виртуальная машина, используемая для оптимизации вычислительной мощности распределенной системы ЧПУ путем передачи части программных компонентов на выделенные серверы. Технические характеристики: Intel Xeon CPU E5645 @ \SI{2,4}{\giga\hertz}, \SI{512}{\mebi\byte} ОЗУ. Операционная система: Ubuntu 16.04.2 LTS, GNU/Linux 2.6.32-042stab120.18 x86-64.
 \end{enumerate}
 
 \paragraph{Библиотеки и фреймворки}
@@ -234,25 +235,24 @@ A Minimal Thread Device does not subscribe to multicast traffic and forwards all
 
 \paragraph{Сравнение пропускной способности сокетов TCP и UNIX}
 
-Для сравнения пропускной способности сокетов TCP и UNIX использовались следующие методы:
+Для сравнения пропускной способности сокетов TCP и UNIX использовались следующие способы:
 
 \begin{enumerate}
 \setcounter{enumi}{0}
-\item Утилита \texttt{socat}, перенос из памяти на диск, используется разделяемая память.
+\item Способ 1 (Сп.\,1): утилита \texttt{socat}, перенос из памяти на диск, используется разделяемая память.
 \end{enumerate}
 
 \noindent
 \begin{lstlisting}
 $ sudo dd if=/dev/urandom of=/dev/shm/data.dump bs=1M count=512
 $ sudo socat -u -b32768 UNIX-LISTEN:/tmp/unix.sock./data.dump &
-$ sudo socat -u -b32768 "SYSTEM: dd if=/dev/shm/data.dump bs=1M count=512" \
-UNIX:/tmp/unix.sock
+$ sudo socat -u -b32768 "SYSTEM: dd if=/dev/shm/data.dump bs=1M count=512" UNIX:/tmp/unix.sock
 $ sudo rm -rf/dev/shm/data.dump
 \end{lstlisting}
 
 \begin{enumerate}
 \setcounter{enumi}{1}
-\item Утилита \texttt{socat}, перенос из памяти в память, используется общая память.
+\item Способ 2 (Сп.\,2): утилита \texttt{socat}, перенос из памяти в память, используется общая память.
 \end{enumerate}
 
 \noindent
@@ -267,7 +267,7 @@ $ sudo rm -rf/dev/shm/data.dump.out
 
 \begin{enumerate}
 \setcounter{enumi}{2}
-\item Утилита \texttt{socat}, перенос из памяти на нулевое устройство, используется разделяемая память.
+\item  Способ 3 (Сп.\,3): утилита \texttt{socat}, перенос из памяти на нулевое устройство, используется разделяемая память.
 \end{enumerate}
 
 \noindent
@@ -281,30 +281,30 @@ $ sudo rm -rf/dev/shm/data.dump
 
 \begin{enumerate}
 \setcounter{enumi}{3}
-\item Утилита \texttt{socat}, передача из \texttt{/dev/zero} (специальный файл, который предоставляет столько нулевых символов, сколько читается из него) на нулевое устройство.
+\item  Способ 4 (Сп.\,4): утилита \texttt{socat}, передача из \texttt{/dev/zero} (специальный файл, который предоставляет столько нулевых символов, сколько читается из него) на нулевое устройство.
 \end{enumerate}
 
 \noindent
 \begin{lstlisting}
 $ sudo socat -u -b32768 UNIX-LISTEN:/tmp/unix.sock/dev/null &
-$ sudo socat -u -b32768 "SYSTEM: dd if=/dev/zero bs=1M count=512" \
+$ sudo socat -u -b32768 "SYSTEM: dd if=/dev/zero bs=1M count=512"\
 UNIX:/tmp/unix.sock
 \end{lstlisting}
 
 \begin{enumerate}
 \setcounter{enumi}{4}
-\item Утилита \texttt{nc}, передача данных через общий файл.
+\item  Способ 5 (Сп.\,5): утилита \texttt{nc}, передача данных через общий файл.
 \end{enumerate}
 
 \noindent
 \begin{lstlisting}
-(SEND) $ sudo pv /dev/zero | NC -U /tmp/socket
+(SEND) $ sudo pv /dev/zero | nc -U /tmp/socket
 (RECV) $ sudo nc -lU /tmp/socket>/dev/null
 \end{lstlisting}
 
 \begin{enumerate}
 \setcounter{enumi}{5}
-\item Утилита \texttt{iperf}, передача данных через сокет TCP, размер окна TCP 2.5 \, МБ.
+\item  Способ 6 (Сп.\,6): утилита \texttt{iperf}, передача данных через сокет TCP, размер окна TCP \SI{2,5}{\mega\byte}.
 \end{enumerate}
 
 \noindent
@@ -315,48 +315,45 @@ UNIX:/tmp/unix.sock
 
 Результаты сравнительного анализа представлены в таблице~\cref{tab:ipc-band}. Можно видеть, что лучший способ межпроцессного взаимодействия в POSIX-совместимых операционных системах "--- использовать сокеты TCP.
 
-%\begin{table}[!tb]
-%\centering
-%\caption{Сравнение пропускной способности межпроцессного взаимодействия}
-%\label{tab: ipc-band}
-%\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{0pt}]{x/u/Vx/r/v/r/v/r/v/r/v/r/v/r/x}
-%\IEEEeqnarraydblrulerowcut \\
-%
-%&&&& \IEEEeqnarraymulticol{11}{t}{Пропускная способность, Гбит/с} & \\
-%
-%& \hfill \raisebox{-3pt} [0pt] [0pt]{Тестовая установка} \hfill && \IEEEeqnarraymulticol{13}{h}{}%
-%\IEEEeqnarraystrutsize{0pt}{0pt} \\
-%
-%&&&& \hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 1} \hfill &&
-%\hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 2} \hfill &&
-%\hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 3} \hfill &&
-%\hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 4} \hfill &&
-%\hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 5} \hfill &&
-%\hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 6} \hfill &
-%\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
-%%
-%\IEEEeqnarraydblrulerowcut \\
-%
-%& Общий ПК &&& 0,69 && 5,76 && 7,46 && 12,03 && 6,33 && 22,3 & \\
-%
-%& Ноутбук &&& 1.79 && 4.47 && 5.98 && 10.18 && 3.65 && 23.2 & \\
-%
-%& Сервер &&& 2.41 && 2.76 && 2.75 && 3.23 && 3.13 && 31.6 & \\
-%
-%& PLC &&& 1,98 && 1,96 && 2,38 && 2,86 && 2,04 && 4,61 & \\
-%%
-%\IEEEeqnarraydblrulerowcut \\
-%\end{IEEEeqnarraybox}
-%\end{table}
+\begin{table}[!htb]
+\centering
+\caption{Сравнение пропускной способности при использовании межпроцессного взаимодействия}
+\label{tab:ipc-band}
+	\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{0pt}]{x/u/Vx/r/v/r/v/r/v/r/v/r/v/r/x}
+	\IEEEeqnarraydblrulerowcut \\
+	
+	&&&& \IEEEeqnarraymulticol{11}{t}{Пропускная способность, Гбит/с} & \\
+	
+	& \hfill \raisebox{-3pt}[0pt][0pt]{Тестовая установка} \hfill && \IEEEeqnarraymulticol{13}{h}{}%
+	\IEEEeqnarraystrutsize{0pt}{0pt} \\
+	
+	&&&& \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,1} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,2} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,3} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,4} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,5} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,6} \hfill &
+	\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
+	%
+	\IEEEeqnarraydblrulerowcut \\
+	
+	& General PC &&& 0,69 && 5,76 && 7,46 && 12,03 && 6,33 && 22,3 & \\
+	& Laptop &&& 1,79 && 4,47 && 5,98 && 10,18 && 3,65 && 23,2 & \\
+	& Server &&& 2,41 && 2,76 && 2,75 && 3,23 && 3,13 && 31,6 & \\
+	& Microcomputer &&& 1,98 && 1,96 && 2,38 && 2,86 && 2,04 && 4,61 & \\
+	%
+	\IEEEeqnarraydblrulerowcut \\
+	\end{IEEEeqnarraybox}
+\end{table}
 
 \paragraph{Определение средней пропускной способности сетевых подключений}
 
 
-Для определения средней пропускной способности сетевых подключений использовались следующие методы:
+Для определения средней пропускной способности сетевых подключений использовались следующие способы:
 
 \begin{enumerate}
 \setcounter{enumi}{0}
-\item HTTP сервер, передано \SI{10}{\giga\byte} данных.
+\item Способ 1 (Сп.\,1): HTTP сервер, передано \SI{10}{\giga\byte} данных.
 \end{enumerate}
 
 \noindent
@@ -368,7 +365,7 @@ UNIX:/tmp/unix.sock
 
 \begin{enumerate}
 \setcounter{enumi}{1}
-\item \texttt{iperf}, размер окна TCP \SI{84,3}{\kilo\byte}, \SI{10}{\giga\byte} данных.
+\item  Способ 2 (Сп.\,2): утилита \texttt{iperf}, размер окна TCP \SI{84,3}{\kilo\byte}, \SI{10}{\giga\byte} данных.
 \end{enumerate}
 
 \noindent
@@ -379,7 +376,7 @@ UNIX:/tmp/unix.sock
 
 \begin{enumerate}
 \setcounter{enumi}{2}
-\item \texttt{netperf}, передано \SI{10}{\giga\byte} данных.
+\item Способ 3 (Сп.\,3): утилита \texttt{netperf}, передано \SI{10}{\giga\byte} данных.
 \end{enumerate}
 
 \noindent
@@ -389,7 +386,7 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 
 \begin{enumerate}
 \setcounter{enumi}{3}
-\item \texttt{nuttcp}, передано \SI{10}{\giga\byte} данных.
+\item Способ 4 (Сп.\,4): утилита \texttt{nuttcp}, передано \SI{10}{\giga\byte} данных.
 \end{enumerate}
 \noindent
 \begin{lstlisting}
@@ -399,7 +396,7 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 
 \begin{enumerate}
 \setcounter{enumi}{4}
-\item \texttt{nttcp}, передано \SI{10}{\giga\byte} данных.
+\item Способ 5 (Сп.\,5): утилита \texttt{nttcp}, передано \SI{10}{\giga\byte} данных.
 \end{enumerate}
 
 \noindent
@@ -408,40 +405,40 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 (RECV) $ nttcp -t -T <send-ip>
 \end{lstlisting}
 
-Результаты сравнительного анализа представлены в таблице\cref{tab: network-band}. Очевидно, что использование протокола HTTP приводит к появлению дополнительных накладных расходов, поэтому этот метод исключается из расчета средней пропускной способности.
+Результаты сравнительного анализа представлены в таблице~\cref{tab:network-band}. Очевидно, что использование протокола HTTP приводит к появлению дополнительных накладных расходов, поэтому этот метод исключается из расчета средней пропускной способности.
 
-%\begin{table} [!htb]
-%	\centering
-%	\caption{Пропускная способность сетевых подключений}
-%	\label{tab: network-band}
-%	\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{0pt}]{x/s/Vx/r/v/r/v/r/v/r/v/r/v/r/x}
-%	\IEEEeqnarraydblrulerowcut \\
-%	
-%	&&&& \IEEEeqnarraymulticol{11}{t}{Пропускная способность, Мбит/с} & \\
-%	
-%	& \hfill \raisebox{-3pt} [0pt] [0pt]{Conn.} \hfill && \IEEEeqnarraymulticol{13}{h}{}%
-%	\IEEEeqnarraystrutsize{0pt}{0pt} \\
-%	
-%	&&&& \hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 1} \hfill &&
-%	\hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 2} \hfill &&
-%	\hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 3} \hfill &&
-%	\hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 4} \hfill &&
-%	\hfill \raisebox{-1pt} [0pt] [0pt]{Meth. \, 5} \hfill &&
-%	\hfill \raisebox{-1pt} [0pt] [0pt]{Avg.} \hfill &
-%	\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
-%	%
-%	\IEEEeqnarraydblrulerowcut \\
-%	
-%	& Wi-Fi \rlap{\textuperscript{*}} &&& \bf{5.25} && 5.95 && 8.00 && 6.86 && 5.47 && 6.57 & \\
-%	
-%	& Кабель \rlap{\textuperscript{*}} &&& \bf{559.00} && 941.00 && 907.77 && 941.27 && 940.72 && 932.69 & \\
-%	
-%	& Облако \rlap{\textuperscript{**}} &&& \bf{12.44} && 13.70 && 13.67 && 13.60 && 14.42 && 13.85 & \\
-%	%
-%	\IEEEeqnarraydblrulerowcut \\& \IEEEeqnarraymulticol{13}{s}{\scriptsize \textuperscript{*} соединение между \textit{General PC} и \textit{Server} в локальной сети} \\
-%	& \IEEEeqnarraymulticol{13}{s}{\scriptsize \textuperscript{**} соединение между \textit{Server} и \textit{VPS} через Интернет}%
-%	\end{IEEEeqnarraybox}
-%\end{table}
+\begin{table}[!htb]
+	\centering
+	\caption{Пропускная способность сетевых подключений}
+	\label{tab:network-band}
+	\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{2pt}]{x/u/Vx/r/v/r/v/r/v/r/v/r/v/r/x}
+	\IEEEeqnarraydblrulerowcut \\
+	
+	&&&& \IEEEeqnarraymulticol{11}{t}{Пропускная способность, Мбит/с} & \\
+	
+	& \hfill \raisebox{-3pt}[0pt][0pt]{Тип соединения} \hfill && \IEEEeqnarraymulticol{13}{h}{}%
+	\IEEEeqnarraystrutsize{0pt}{0pt} \\
+	
+	&&&& \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,1} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,2} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,3} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,4} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Сп.\,5} \hfill &&
+	     \hfill \raisebox{-1pt}[0pt][0pt]{Средн.} \hfill &
+	\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
+	%
+	\IEEEeqnarraydblrulerowcut \\
+	
+	& Беспроводное соединение \rlap{\textsuperscript{1}} &&& 5.25 && 5.95 && 8.00 && 6.86 && 5.47 && 6.57 & \\
+	
+	& Кабельное соединение \rlap{\textsuperscript{1}} &&& 559.00 && 941.00 && 907.77 && 941.27 && 940.72 && 932.69 & \\
+	
+	& Облачное соединение \rlap{\textsuperscript{2}} &&& 12.44 && 13.70 && 13.67 && 13.60 && 14.42 && 13.85 & \\
+	%
+	\IEEEeqnarraydblrulerowcut \\& \IEEEeqnarraymulticol{13}{s}{\scriptsize \textsuperscript{1} Cоединение между \textit{General PC} и \textit{Server} в локальной сети.} \\
+    & \IEEEeqnarraymulticol{13}{s}{\scriptsize \textsuperscript{2} Cоединение между \textit{Server} и \textit{Virtual server} через Интернет.}%
+	\end{IEEEeqnarraybox}
+\end{table}
 
 
 \paragraph{Оценка производительности упаковщиков JSON}
@@ -451,7 +448,7 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.9\textwidth]{ch-3/json-compession}
+	\includegraphics[width=0.7\textwidth]{ch-3/json-compession}
 	\caption{Степень сжатия как функция размера файла JSON}
 	\label{fig:json-compress}
 \end{figure}
@@ -462,43 +459,43 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{ch-3/json-pack}
+	\includegraphics[width=0.7\textwidth]{ch-3/json-pack}
 	\caption{Время упаковки в зависимости от размера файла JSON}
 	\label{fig:json-pack}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.9\textwidth]{ch-3/json-unpack}
+	\includegraphics[width=0.7\textwidth]{ch-3/json-unpack}
 	\caption{Время распаковки как функция размера файла JSON}
 	\label{fig:json-unpack}
 \end{figure}
 
-%\begin{table} [! t]
-%\centering
-%\caption{Пропускная способность библиотек CBOR}
-%\label{tab: cbor}
-%\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{0pt}]{x/s/Vx/r/v/r/x}
-%\IEEEeqnarraydblrulerowcut \\%
-%%
-%&&&& \IEEEeqnarraymulticol{3}{t}{Пропускная способность, Мбит/с} & \\
-%%
-%& \hfill \raisebox{-3pt} [0pt] [0pt]{Библиотека} \hfill && \IEEEeqnarraymulticol{5}{h}{}%
-%
-%\IEEEeqnarraystrutsize{0pt}{0pt} \\
-%
-%&&&& \hfill \raisebox{-1pt} [0pt] [0pt]{Упаковка} \hfill &&
-%\hfill \raisebox{-1pt} [0pt] [0pt]{Распаковка} \hfill &
-%\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
-%%
-%\IEEEeqnarraydblrulerowcut \\
-%& Python 3.5.2 CBOR &&& 112.73 && 19.13 & \\
-%& Python 3.5.2 CBOR2 &&& 7.59 && 4.30 & \\
-%& C libcbor (GCC 6.2.0 20161005) &&& 244.13 && 273.07 & \\
-%& JavaScript cbor (Google Chrome 56.0.2924.87) &&& 76.19 && 100.21 & \\
-%\IEEEeqnarraydblrulerowcut \\
-%\end{IEEEeqnarraybox}
-%\end{table}
+\begin{table}[!htb]
+\centering
+\caption{Пропускная способность при использовании библиотек CBOR}
+\label{tab:cbor}
+	\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{0pt}]{x/s/Vx/r/v/r/x}
+	\IEEEeqnarraydblrulerowcut \\%
+	%
+	&&&& \IEEEeqnarraymulticol{3}{t}{Пропускная способность, Мбит/с} & \\
+	%
+	& \hfill \raisebox{-3pt} [0pt] [0pt]{Библиотека} \hfill && \IEEEeqnarraymulticol{5}{h}{}%
+	
+	\IEEEeqnarraystrutsize{0pt}{0pt} \\
+	
+	&&&& \hfill \raisebox{-1pt}[0pt][0pt]{Упаковка} \hfill &&
+	\hfill \raisebox{-1pt}[0pt][0pt]{Распаковка} \hfill &
+	\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
+	%
+	\IEEEeqnarraydblrulerowcut \\
+	& Python 3.5.2 CBOR &&& 112.73 && 19.13 & \\
+	& Python 3.5.2 CBOR2 &&& 7.59 && 4.30 & \\
+	& C libcbor (GCC 6.2.0 20161005) &&& 244.13 && 273.07 & \\
+	& JavaScript cbor (Chrome 56.0.2924.87) &&& 76.19 && 100.21 & \\
+	\IEEEeqnarraydblrulerowcut \\
+	\end{IEEEeqnarraybox}
+\end{table}
 %
 \paragraph{Оценка производительности протоколов очереди сообщений}
 
@@ -506,32 +503,32 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 Библиотеки~NanoMsg и ZeroMQ показали лучшую производительность. NanoMsg был выбран в качестве основного протокола передачи сообщений в рассматриваемой распределенной системе ЧПУ. Основные причины этого решения - лучшая совместимость с POSIX и более гибкий API.
 
 
-В таблице\cref{tab: nanomsg} показаны результаты измерения пропускной способности протокола NanoMsg для различных сетевых подключений. Все тесты были написаны на Python, где размер сообщения \SI{1}{\kilo\byte}, и в каждом тесте было отправлено один миллион сообщений.
+В таблице\cref{tab: nanomsg} показаны результаты измерения пропускной способности протокола NanoMsg для различных сетевых подключений. Все тесты были написаны на Python, где размер сообщения \SI{1}{\kilo\byte}, и в каждом тесте был отправлено один миллион сообщений.
 
-%\begin{table} [! h]
-%\centering
-%\caption{Пропускная способность протокола NanoMsg}
-%\label{tab: nanomsg}
-%\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{0pt}]{x/u/Vx/r/v/r/x}
-%\IEEEeqnarraydblrulerowcut \\%
-%%
-%&&&& \IEEEeqnarraymulticol{3}{t}{Пропускная способность, Мбит/с} & \\
-%%
-%& \hfill \raisebox{-3pt} [0pt] [0pt]{Библиотека} \hfill && \IEEEeqnarraymulticol{5}{h}{}%
-%
-%\IEEEeqnarraystrutsize{0pt}{0pt} \\
-%
-%&&&& \hfill \raisebox{-1pt} [0pt] [0pt]{Nanomsg PUBSUB} \hfill &&
-%\hfill \raisebox{-1pt} [0pt] [0pt]{Nanomsg BUS} \hfill &
-%\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
-%%
-%\IEEEeqnarraydblrulerowcut \\
-%& Wi-Fi &&& 5.93 && 7.34 & \\
-%& Кабель &&& 880.74 && 880.38 & \\
-%& Облако &&& 15.18 && 14.98 & \\
-%\IEEEeqnarraydblrulerowcut \\
-%\end{IEEEeqnarraybox}
-%\end{table}
+\begin{table}[!htb]
+\centering
+\caption{Пропускная способность при использовании протокола NanoMsg}
+\label{tab:nanomsg}
+	\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{0pt}]{x/u/Vx/r/v/r/x}
+	\IEEEeqnarraydblrulerowcut \\%
+	%
+	&&&& \IEEEeqnarraymulticol{3}{t}{Пропускная способность, Мбит/с} & \\
+	%
+	& \hfill \raisebox{-3pt}[0pt][0pt]{Библиотека} \hfill && \IEEEeqnarraymulticol{5}{h}{}%
+	
+	\IEEEeqnarraystrutsize{0pt}{0pt} \\
+	
+	&&&& \hfill \raisebox{-1pt}[0pt][0pt]{Nanomsg PUBSUB} \hfill &&
+	\hfill \raisebox{-1pt}[0pt][0pt]{Nanomsg BUS} \hfill &
+	\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
+	%
+	\IEEEeqnarraydblrulerowcut \\
+	& Беспроводное соединение &&& 5.93 && 7.34 & \\
+	& Кабельное соединение &&& 880.74 && 880.38 & \\
+	& Облачное соединение &&& 15.18 && 14.98 & \\
+	\IEEEeqnarraydblrulerowcut \\
+	\end{IEEEeqnarraybox}
+\end{table}
 
 
 \begin{figure}[!htb]
@@ -566,44 +563,43 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 \end{split}
 \end{equation}
 
-\noindent, где ${\mathcal{M}}$ "--- размер сообщения, $t$ "--- общее время между двумя точками, $t_p$ "--- время упаковки, $t_t$ "--- время передачи, $t_u$ "--- время распаковки, $\mathcal{S}_p$ "--- скорость упаковки данных JSON, $\mathcal{S}_u$ "--- скорость распаковки данных JSON, $\mathcal{B}_t$ "--- пропускная способность очереди сообщений, $\gamma$ "--- степень сжатия JSON.
+\noindent где ${\mathcal{M}}$ "--- размер сообщения, $t$ "--- общее время между двумя точками, $t_p$ "--- время упаковки, $t_t$ "--- время передачи, $t_u$ "--- время распаковки, $\mathcal{S}_p$ "--- скорость упаковки данных JSON, $\mathcal{S}_u$ "--- скорость распаковки данных JSON, $\mathcal{B}_t$ "--- пропускная способность очереди сообщений, $\gamma$ "--- степень сжатия JSON.
 
 Часто библиотеки Python демонстрируют производительность, примерно равную производительности библиотек C. Это связано с тем, что эти библиотеки являются просто оболочками библиотек C. В этом случае использование библиотек Python предпочтительнее из-за более простого синтаксиса языка программирования Python. Однако рассматриваемые библиотеки Python не показали достаточной производительности, поэтому очевидно, что для реализации серверной части была выбрана библиотека C. При реализации клиентской части использовалась библиотека JS, так как это единственный вариант реализации программ в браузере.
 
-В таблице\cref{tab: res} показаны результаты расчетов. Расчеты показывают, что средняя полоса пропускания описанного канала связи находится в диапазоне от \SI{6}{\percent} (наихудший случай, упаковка/распаковка требуется на обеих конечных точках) до \SI{145}{\percent} (лучший случай, упаковка/распаковка вообще не требуется, обе конечные точки используют двоичные данные JSON, что подразумевает возможность сжатия сообщений из-за того, что двоичный формат JSON занимает меньше места по сравнению с текстовым JSON).
+В таблице~\cref{tab:res} показаны результаты расчетов. Расчеты показывают, что средняя полоса пропускания описанного канала связи находится в диапазоне от \SI{6}{\percent} (наихудший случай, упаковка/распаковка требуется на обеих конечных точках) до \SI{145}{\percent} (лучший случай, упаковка/распаковка вообще не требуется, обе конечные точки используют двоичные данные JSON, что подразумевает возможность сжатия сообщений из-за того, что двоичный формат JSON занимает меньше места по сравнению с текстовым JSON).
 
-%\begin{table} [! h]
-%\centering
-%\caption{Пропускная способность связи, кабельное соединение, $ \gamma = 0,65 $}
-%\label{tab: res}
-%\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{0pt}]{x/u/Vx/r/v/r/v/r/x/}
-%\IEEEeqnarraydblrulerowcut \\
-%
-%& \hfill \raisebox{-8.5pt} [0pt] [0pt]{\bsfrac{\; \mathcal{S}_u}{\mathcal{S}_p \;}}
-%\hfill && \IEEEeqnarraymulticol{0}{h}{}%
-%\IEEEeqnarraystrutsize{0pt}{0pt} \\
-%
-%&&&& \hfill \raisebox{0pt} [0pt] [0pt]{библиотека JS} \hfill &&
-%\hfill \raisebox{0pt} [0pt] [0pt]{библиотека C} \hfill &&
-%\hfill \raisebox{0pt} [0pt] [0pt]{Без распаковки} \hfill &
-%\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
-%%
-%\IEEEeqnarraydblrulerowcut \\
-%
-%& Библиотека JS &&& n/a \rlap{\textuperscript{*}} &&{\bf57.06} && 70.94 & \\
-%& &&& &&{\bf (6.22 \, \%)} && (7.60 \, \%) & \\
-%
-%Библиотека & C &&& 67.50 && 117.70 && 203.18 & \\
-%& &&& (7.24 \, \%) && (12.62 \, \%) && (21.78 \, \%) & \\
-%
-%& Без упаковки &&& 93.31 && 227.27 &&{\bf 1354.98} & \\
-%& &&& (10.00 \, \%) && (24.37 \, \%) &&{\bf (145.28 \, \%)} & \\
-%%
-%\IEEEeqnarraydblrulerowcut \\
-%& \IEEEeqnarraymulticol{9}{s}{\scriptsize \textuperscript{*} связь между клиентом не реализована} \\
-%& \IEEEeqnarraymulticol{9}{s}{\scriptsize \quad в рассматриваемой системе}%
-%\end{IEEEeqnarraybox}
-%\end{table}
+\begin{table}[!htb]
+\centering
+\caption{Пропускная способность, кабельное соединение, $\gamma=0,65$}
+\label{tab:res}
+	\begin{IEEEeqnarraybox} [\IEEEeqnarraystrutmode \IEEEeqnarraystrutsizeadd{2pt}{0pt}]{x/u/Vx/r/v/r/v/r/x/}
+	\IEEEeqnarraydblrulerowcut \\
+	
+	& \hfill %\raisebox{0pt}[0pt][0pt]{Отношение $\mathcal{S}_u / \mathcal{S}$}
+	\hfill && \IEEEeqnarraymulticol{0}{h}{}%
+	\IEEEeqnarraystrutsize{0pt}{0pt} \\
+	
+	&&&& \hfill \raisebox{0pt}[0pt][0pt]{Библиотека JS} \hfill &&
+	     \hfill \raisebox{0pt}[0pt][0pt]{Библиотека C} \hfill &&
+	     \hfill \raisebox{0pt}[0pt][0pt]{Без распаковки} \hfill &
+	\IEEEeqnarraystrutsizeadd{0pt}{2pt} \\
+	%
+	\IEEEeqnarraydblrulerowcut \\
+	
+	& Библиотека JS &&& n/a \rlap{\textsuperscript{1}} && {57.06} && 70.94 & \\
+	& &&& &&{(6.22\,\%)} && (7.60\,\%) & \\
+	
+	& Библиотека  C &&& 67.50 && 117.70 && 203.18 & \\
+	& &&& (7.24\,\%) && (12.62 \,\%) && (21.78 \, \%) & \\
+	
+	& Без упаковки &&& 93.31 && 227.27 && {1354.98} & \\
+	& &&& (10.00\,\%) && (24.37\,\%) && {(145.28\,\%)} & \\
+	%
+	\IEEEeqnarraydblrulerowcut \\
+	& \IEEEeqnarraymulticol{9}{s}{\scriptsize\textsuperscript{1} Cвязь между клиентами не реализована в рассматриваемом сценарии.}%
+	\end{IEEEeqnarraybox}
+\end{table}
 
 \subsection{Методика оценка качества сигнала при беспроводном соединении модулей}
 
@@ -616,7 +612,7 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 
 \begin{figure*} [tb]
 	\centering
-	\includegraphics[width=0.9\linewidth]{ch-3/fig-1}
+	\includegraphics[width=0.9\linewidth]{ch-3/fig-1-ru}
 	\caption{Уровни производственной системы}
 	\label{ch-3/fig-1}
 \end{figure*}
@@ -627,13 +623,13 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 
 Одновременно стремительно растет аппаратная база. В настоящее время на рынке представлен большой выбор микросхем и готовых плат, поддерживающих сразу несколько технологий WPAN. Несмотря на изначально небольшую дальность передачи сигнала, использование сетки топология позволяет достичь практически неограниченного диапазона. Также стоит отметить возможность построения WPAN со стеком TCP/IP, что удобно при работе с другими сетями.
 
-К недостаткам WPAN можно отнести частотные диапазоны, в которых работают эти сети: \SI{868}{\mega\hertz}, \SI{915}{\mega\hertz} и \SI{2,4}{\giga\hertz}. В России они не лицензированы, но имеют ограничения по мощности передатчика~\cite{freq}. Эти диапазоны называются <<частотами ISM>>\footnote{Сокр. от англ. \textit{Industrial, Scientific, Medical}.}. Как следует из названия, большое количество оборудования работает в диапазонах, которые могут создавать помехи сети~\cite{750064, 6209430}.
+К недостаткам WPAN можно отнести частотные диапазоны, в которых работают эти сети: \SI{868}{\mega\hertz}, \SI{915}{\mega\hertz} и \SI{2,4}{\giga\hertz}. В России они не лицензированы, но имеют ограничения по мощности передатчика~\cite{freq}. Эти диапазоны называются <<частотами ISM>>.\footnote{Сокр. от англ. \textit{Industrial, Scientific, Medical}.} Как следует из названия, большое количество оборудования работает в диапазонах, которые могут создавать помехи сети~\cite{750064, 6209430}.
 
 На производственной площадке существует множество факторов, которые могут ослабить и исказить беспроводной сигнал. Выявление этих аспектов перед развертыванием беспроводной сети является обязательной процедурой. Рисунок~\cref{ch-3/fig-2} представляет классификацию факторов по основным характеристикам. При проектировании нового предприятия многие из этих факторов можно определить уже на этапе разработки компоновки оборудования и агрегатов. Например, тип среды может определяться функциональным назначением производственного помещения. Зная окончательную компоновку блоков, можно определить, где офисные сети Wi-Fi~2,4\,ГГц будут пересекаться с промышленной беспроводной сетью. Учитывая это, можно вносить коррективы, чтобы повысить помехозащищенность сети.
 
 \begin{figure*}[ht]
 	\centering
-	\includegraphics[width=\linewidth]{ch-3/fig-2}
+	\includegraphics[width=\linewidth]{ch-3/fig-2-ru}
 	\caption{Классификация факторов ослабления беспроводного сигнала на производственной площадке}
 	\label{ch-3/fig-2}
 \end{figure*}
@@ -703,25 +699,7 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 	\label{ch-3/fig-3}
 \end{figure}
 
-Установка состоит из двух плат на базе микросхемы nRF52840~\footnote{Электронный ресурс:{\tiny\url{https://wiki.makerdiary.com/nrf52840-mdk-usb-dongle/} (дата обращения: 16.07.2020)}.}, которые действуют как приемник и передатчик. На плате установлена чип-антенны, параметры которой указаны в таблице~\cref{tab-1}. Кроме того, для регистрации данных используется персональный компьютер. Персональный компьютер подключен к приемнику через интерфейс универсального асинхронного приемника-передатчика (UART) для получения измеренных значений RSSI. Внутри WPAN сообщение передается по протоколу Thread~\footnote{Электронный ресурс:{\tiny\url{https://openthread.io}} (дата обращения: 20.05.2020).}.
-
-\begin{table}[ht]
-\centering
-\caption{Спецификация чип-антенны ACA-2012-A1-CC-S} \vspace{4pt}
-\label{tab-1}
-	\begin{tabularx}{\linewidth}{XX}
-		\toprule
-		\textbf{Параметр} & \textbf{Значение} \\
-		\midrule
-		Диапазон частот (МГц) & 2400--2483 \\
-		Коэффициент стоячей волны &$<3,0$\\
-		Поляризация & линейная \\
-		Входное сопротивление (Ом) & 50 \\
-		Коэффициент усиления (дБи) & 1,72 \\
-		Размеры (мм) & $2,0 \times1,2 \times0,55$\\
-		\bottomrule
-	\end{tabularx}
-\end{table}
+Установка состоит из двух плат на базе микросхемы nRF52840\footnote{Электронный ресурс: {\tiny\url{https://wiki.makerdiary.com/nrf52840-mdk-usb-dongle/} (дата обращения: 16.07.2020)}.}, которые действуют как приемник и передатчик. На плате установлена чип-антенны, параметры которой указаны в таблице~\cref{tab-1}. Кроме того, для регистрации данных используется персональный компьютер. Персональный компьютер подключен к приемнику через интерфейс универсального асинхронного приемника-передатчика (UART) для получения измеренных значений RSSI. Внутри WPAN сообщение передается по протоколу Thread.\footnote{Электронный ресурс: {\tiny\url{https://openthread.io}} (дата обращения: 20.05.2020).}
 
 Эксперимент проводился на производственных площадях компании <<Лар Технологии>>, специализирующейся на разработке технологического оборудования. Влияние каждого из следующих факторов разного типа, выбранных в соответствии с классификацией в~\cref{ch-3/fig-2}, изучалось отдельно.
 
@@ -741,7 +719,25 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 
 \paragraph{Результаты экспериментов}
 
-По мере увеличения расстояния между приемником и передатчиком значение RSSI уменьшается, что можно объяснить явлением потерь на трассе распространения. В этом случае значение RSSI уменьшается логарифмически в зависимости от расстояния~\cref{eq-1}. Это происходит в соответствии с законом сохранения энергии. Поскольку волна передает энергию и распространяется сферически, энергия с увеличением расстояния распределяется по увеличивающейся площади поверхности сферы~\footnote{Электронный ресурс:{\tiny\url{http://asupro.com/gps-gsm/means-identification/automatic/linear-circular-polarization-rfid-system.html}} (дата обращения: 09.05.2020).}. \cref{ch-3/fig-4a} показывает график, отражающий теоретическую кривую значений RSSI, полученных в соответствии с~\cref{eq-1}, и зависимость между RSSI и расстоянием при измерениях на открытом воздухе. Можно отметить, что кривые оказались похожими по форме. Однако есть небольшие отклонения RSSI, значения которых показаны в~\cref{ch-3/fig-4b}.
+\begin{table}[!h]
+	\centering
+	\caption{Спецификация чип-антенны ACA-2012-A1-CC-S} \vspace{4pt}
+	\label{tab-1}
+	\begin{tabularx}{\linewidth}{XX}
+		\toprule
+		\textbf{Параметр} & \textbf{Значение} \\
+		\midrule
+		Диапазон частот (МГц) & 2400--2483 \\
+		Коэффициент стоячей волны &$<$3,0\\
+		Поляризация & линейная \\
+		Входное сопротивление (Ом) & 50 \\
+		Коэффициент усиления (дБи) & 1,72 \\
+		Размеры (мм) & 2,0 $\times$ 1,2 $\times$ 0,55\\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+По мере увеличения расстояния между приемником и передатчиком значение RSSI уменьшается, что можно объяснить явлением потерь на пути распространения. В этом случае значение RSSI уменьшается логарифмически в зависимости от расстояния~\cref{eq-1}. Это происходит в соответствии с законом сохранения энергии. Поскольку волна передает энергию и распространяется сферически, энергия с увеличением расстояния распределяется по увеличивающейся площади поверхности сферы.~\footnote{Электронный ресурс: {\tiny\url{http://asupro.com/gps-gsm/means-identification/automatic/linear-circular-polarization-rfid-system.html}} (дата обращения: 09.05.2020).} Рисунок~\cref{ch-3/fig-4a} показывает график, отражающий теоретическую кривую значений RSSI, полученных в соответствии с~\cref{eq-1}, и зависимость между RSSI и расстоянием при измерениях на открытом воздухе. Можно отметить, что кривые оказались похожими по форме. Однако есть небольшие отклонения RSSI, значения которых показаны в~\cref{ch-3/fig-4b}.
 
 \begin{figure}[!htb]
 	\centering
@@ -782,7 +778,7 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 		\includegraphics[clip, width=0.49\textwidth]{ch-3/fig-6b}%
 		\label{ch-3/fig-6b}
 	}
-	\caption{Влияние препятствий в производственном помещении на: $RSSI$(\textit{а}) и отклонение RSSI от теоретического значения (\textit{б})}
+	\caption[Влияние препятствий в производственном помещении на: RSSI и отклонение RSSI от теоретического значения)]{Влияние препятствий в производственном помещении на: $RSSI$ (\textit{а}) и отклонение RSSI от теоретического значения (\textit{б})}
 	\label{ch-3/fig-6}
 \end{figure}
 
@@ -801,7 +797,7 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 	\label{ch-3/fig-7}
 \end{figure}
 
-Большое количество силового оборудования, расположенного в помещении мастерской, может искажать передаваемый беспроводной сигнал и вызывать помехи. Чаще всего это наблюдается при распространении импульсного сигнала по линиям электропередачи оборудования. Это происходит потому, что при формировании фронта амплитуда сигнала изменяется с большой скоростью, что приводит к появлению большого количества высокочастотных гармоник в спектре сигнала. В случае рассматриваемого в эксперименте шагового двигателя управление осуществляется с помощью широтно-импульсной модуляции (ШИМ). Графики на рисункек~\cref{ch-3/fig-8} показывают искажение беспроводного сигнала. Для асинхронного двигателя (рисунок~\cref{ch-3/fig-9}) сильных колебаний не наблюдалось, так как управление производилось без использования преобразователя частоты. Сварщик TIG показал один из худших показателей (рисунокк~\cref{ch-3/fig-10}), так как при переключении транзисторных ключей инвертора в процессе сварки на фронтах импульсов происходит большое количество кратковременных переходных процессов в виде затухающих высокочастотных колебания~\footnote{Электронный ресурс:{\tiny\url{https://303421.selcdn.ru/soel-upload/clouds/1/iblock/e03/e036d5c6f8c271c7ebbf44799619f068/201002052.pdf}} (дата обращения 01.05.2020).}.
+Большое количество силового оборудования, расположенного в помещении мастерской, может искажать передаваемый беспроводной сигнал и вызывать помехи. Чаще всего это наблюдается при распространении импульсного сигнала по линиям электропередачи оборудования. Это происходит потому, что при формировании фронта амплитуда сигнала изменяется с большой скоростью, что приводит к появлению большого количества высокочастотных гармоник в спектре сигнала. В случае рассматриваемого в эксперименте шагового двигателя управление осуществляется с помощью широтно-импульсной модуляции (ШИМ). Графики на рисункек~\cref{ch-3/fig-8} показывают искажение беспроводного сигнала. Для асинхронного двигателя (рисунок~\cref{ch-3/fig-9}) сильных колебаний не наблюдалось, так как управление производилось без использования преобразователя частоты. Сварщик TIG показал один из худших показателей (рисунокк~\cref{ch-3/fig-10}), так как при переключении транзисторных ключей инвертора в процессе сварки на фронтах импульсов происходит большое количество кратковременных переходных процессов в виде затухающих высокочастотных колебания.\footnote{Электронный ресурс: {\tiny\url{https://303421.selcdn.ru/soel-upload/clouds/1/iblock/e03/e036d5c6f8c271c7ebbf44799619f068/201002052.pdf}} (дата обращения 01.05.2020).}
 
 \begin{figure} [htb]
 	\subfloat []{%
@@ -858,7 +854,7 @@ $ netperf -H <любой-IP-адрес в сети> -4 -T TCP_STREAM
 	{\small $\Delta R_{max}$} \tnote{2} &
 	{\small $D_{max}$} \tnote{3} \\
 	\midrule
-	Бесплатная среда без других сетей \SI{2,4}{\giga\hertz} & 12,37 & 18,82 & 34,22 \\
+	Свободная среда без других сетей \SI{2,4}{\giga\hertz} & 12,37 & 18,82 & 34,22 \\
 	Асинхронный двигатель & 12.69 & 19.37 & 33.99 \\
 	Отражающая среда (склад металла) & 16.33 & 23.39 & 22.54 \\
 	Шаговый двигатель & 17.51 & 29.41 & 19.67 \\
